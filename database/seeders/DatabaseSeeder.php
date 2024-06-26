@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
             CoursesSeeder::class,
             UsersSeeder::class,
 
-            StudentsSeeder::class,
+            // StudentsSeeder::class,
         ]);
     }
 }
