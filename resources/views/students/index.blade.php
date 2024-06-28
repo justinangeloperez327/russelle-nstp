@@ -9,8 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                <div class="flex justify-end p-2">
-                    <a href="{{ route('students.create') }}" type="button" class="py-2 px-4 bg-blue-500 text-white rounded">Add Student</a>
+                <div class="flex justify-end space-x-2 p-2">
+                    <a href="{{ route('students.create') }}" type="button" class="py-2 px-4 bg-blue-500 text-white rounded text-sm">Add Student</a>
+                    <a href="/students/upload" type="button" class="py-2 px-4 bg-lime-500 text-white rounded text-sm">Batch Upload</a>
                 </div>
                 <div class="p-2">
                     <form method="GET" action="{{ route('students.index') }}">
@@ -48,9 +49,24 @@
                     </form>
                 </div>
 
-                <div class="flex justify-end p-2">
-                    <a href="#" type="button" class="py-2 px-4 bg-blue-500 text-white rounded">Download Certificate</a>
-                    <button type="button" class="py-2 px-4 bg-blue-500 text-white rounded">Select all</button>
+                <div class="flex justify-start space-x-2 p-2">
+                    <button type="button" class="py-2 px-4 bg-gray-500 text-white rounded  text-sm">Select all</button>
+                    <a href="#" id="downloadCertificateLink" class="py-2 px-4 bg-indigo-500 text-white rounded text-sm">Download Certificate</a>
+
+                </div>
+
+                <div id="downloadCertificateModal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                    <div class="flex items-center justify-center min-h-screen">
+                        <div class="bg-white rounded-lg p-4 m-4 shadow-lg">
+                            <!-- Modal content -->
+                            <div class="text-right">
+                                <button id="closeModal" class="text-red-500">Close</button>
+                            </div>
+                            <h2 class="text-lg font-bold">Download Certificate</h2>
+                            <!-- Form or additional content goes here -->
+                            <p>Please confirm your details before downloading.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <table class="w-full divide-y divide-gray-200">
@@ -58,20 +74,22 @@
                         <tr>
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"></th>
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                                Seq. No.
+                            </th>
+                            <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                                 Student ID
                             </th>
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                                 Name
                             </th>
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                                Course Code
+                                Course
                             </th>
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                                 NSTP Type
                             </th>
-
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                                Graduation Year
+                                School Year
                             </th>
                             <th scope="col" class="px-6 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
@@ -85,18 +103,20 @@
                                 <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500 rounded" name="selected_students[]" value="{{ $student->student_id }}"/>
                             </td>
                             <td class="px-6 py-2 whitespace-nowrap text-sm">
+                                {{ $student->seq_no }}
+                            </td>
+                            <td class="px-6 py-2 whitespace-nowrap text-sm">
                                 {{ $student->student_id }}
                             </td>
                             <td class="px-6 py-2 whitespace-nowrap text-sm">
                                 {{ $student->fullname }}
                             </td>
                             <td class="px-6 py-2 whitespace-nowrap text-sm">
-                                {{ $student->course->code }}
+                                {{ $student->course?->name }}
                             </td>
                             <td class="px-6 py-2 whitespace-nowrap text-sm">
                                 {{ $student->enrollment_type }}
                             </td>
-
                             <td class="px-6 py-2 whitespace-nowrap text-sm">
                                 {{ $student->enrollment_year }}
                             </td>
@@ -109,7 +129,9 @@
                                 <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this student?')">Delete</button>
+                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this student?')">
+                                        Delete
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -117,6 +139,40 @@
                     </tbody>
                 </table>
 
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var selectAllButton = document.getElementById('selectAll');
+                        if (selectAllButton) {
+                            selectAllButton.addEventListener('click', function() {
+                                const checkboxes = document.querySelectorAll('input[name="selected_students[]"]');
+                                checkboxes.forEach(checkbox => {
+                                    checkbox.checked = true;
+                                });
+                            });
+                        }
+
+                        var downloadLink = document.getElementById('downloadCertificateLink');
+                        if (downloadLink) {
+                            downloadLink.addEventListener('click', function(event) {
+                                event.preventDefault(); // Prevent the default link behavior
+                                var modal = document.getElementById('downloadCertificateModal');
+                                if (modal) {
+                                    modal.classList.remove('hidden'); // Show the modal
+                                }
+                            });
+                        }
+
+                        var closeModalButton = document.getElementById('closeModal');
+                        if (closeModalButton) {
+                            closeModalButton.addEventListener('click', function() {
+                                var modal = document.getElementById('downloadCertificateModal');
+                                if (modal) {
+                                    modal.classList.add('hidden'); // Hide the modal on close button click
+                                }
+                            });
+                        }
+                    });
+                </script>
             </div>
         </div>
     </div>

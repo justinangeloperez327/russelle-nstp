@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'max_batch_size' => env('MAX_BATCH_SIZE', 1000),
 ];

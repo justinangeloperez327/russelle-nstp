@@ -40,10 +40,15 @@ class Student extends Model
 
         'nstp_serial_no',
 
+        'first_sem_status',
+        'second_sem_status',
+        'seq_no'
     ];
 
     protected $casts = [
         'birthdate' => 'date',
+        'first_sem_status' => 'boolean',
+        'second_sem_status' => 'boolean',
     ];
 
     public function user()

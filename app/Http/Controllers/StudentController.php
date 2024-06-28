@@ -7,9 +7,11 @@ use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Course;
 use App\Models\Student;
+use App\Models\User;
 use App\NstpType;
 use App\StudentStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -41,7 +43,7 @@ class StudentController extends Controller
             ], 'LIKE', '%'.$request->search.'%');
         }
         // Add more filters as needed
-        $students = $query->orderBy('last_name')->get();
+        $students = $query->orderBy('seq_no')->get();
 
         $courses = Course::query()
             ->orderBy('name')
@@ -99,6 +101,12 @@ class StudentController extends Controller
     public function store(StoreStudentRequest $request)
     {
         Student::create($request->validated());
+
+        User::create([
+            'email' => $request->student_id,
+            'password' => Hash::make($request->student_id),
+            'role' => 'student',
+        ]);
 
         return redirect()->route('students.index');
     }

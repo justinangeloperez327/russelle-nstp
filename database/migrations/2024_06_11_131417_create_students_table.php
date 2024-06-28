@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('student_id');
-            $table->string('first_name');
+            $table->string('student_id')->unique()->nullable();
+            $table->string('first_name')->nullable();
             $table->string('middle_name')->nullable();
-            $table->string('last_name');
+            $table->string('last_name')->nullable();
             $table->string('extension_name')->nullable();
-
 
             $table->date('birthdate')->nullable();
             $table->string('email')->nullable();
@@ -35,11 +34,15 @@ return new class extends Migration
             $table->string('brgy')->nullable();
 
             $table->string('enrollment_status')->nullable();
+
+            $table->boolean('first_sem_status')->default(false);
+            $table->boolean('second_sem_status')->default(false);
+
             $table->string('enrollment_year')->nullable();
             $table->string('enrollment_type')->nullable();
 
             $table->string('nstp_serial_no')->nullable();
-
+            $table->bigInteger('seq_no')->nullable();
 
             $table->foreignId('user_id')->nullable();
             $table->foreignId('course_id')->nullable();

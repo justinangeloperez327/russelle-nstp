@@ -4,6 +4,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DownloadCertificateController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UploadStudentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('certificates/{student}', DownloadCertificateController::class)->name('certificates.download');
     Route::resource('courses', CourseController::class);
+
+    Route::post('students/import', [UploadStudentController::class, 'import'])->name('students.import');
+    Route::get('students/upload', [UploadStudentController::class, 'create'])->name('students.upload-form');
+
     Route::resource('students', StudentController::class);
 
 });

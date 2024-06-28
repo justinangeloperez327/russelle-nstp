@@ -14,7 +14,6 @@ class CoursesSeeder extends Seeder
     {
         $courses = [
             ['code' => 'BSIS', 'name' => 'Bachelor of Science in Information Systems'],
-
             ['code' => 'BSA', 'name' => 'Bachelor of Science in Accountancy'],
             ['code' => 'BSBA', 'name' => 'Bachelor of Science in Business Administration'],
             ['code' => 'BSHRM', 'name' => 'Bachelor of Science in Hotel and Restaurant Management'],
